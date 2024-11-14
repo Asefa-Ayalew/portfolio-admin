@@ -1,10 +1,17 @@
-import '@mantine/core/styles.css';
-
-import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import RootStyleRegistry from "./mantine-wrapper";
+import { Inter } from "next/font/google"; // Google font import
+import { Shell } from "./components/shell";
+import "./globals.css";
+// Import Google font
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["400", "500", "600", "700"], // Adjust weights as needed
+});
 
 export const metadata = {
-  title: 'My Mantine app',
-  description: 'I have followed setup instructions carefully',
+  title: "My Mantine app",
+  description: "I have followed setup instructions carefully",
 };
 
 export default function RootLayout({
@@ -13,12 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <ColorSchemeScript />
-      </head>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable}`}>
+      <head></head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <RootStyleRegistry>
+          <Shell>{children}</Shell>
+        </RootStyleRegistry>
       </body>
     </html>
   );
