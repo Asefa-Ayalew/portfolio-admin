@@ -1,3 +1,4 @@
+"use client"
 import { Container, Title, Text, Button, Group } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 
