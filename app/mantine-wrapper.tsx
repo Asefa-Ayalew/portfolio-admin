@@ -1,7 +1,7 @@
 import { ColorSchemeScript, Loader, MantineProvider } from "@mantine/core";
 
 import { Suspense } from "react";
-import { theme } from "./theme";
+import { theme } from "./shared/config/theme/theme";
 
 interface RootStyleRegistryProps {
   readonly children: React.ReactNode;

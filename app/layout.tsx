@@ -1,7 +1,7 @@
 import RootStyleRegistry from "./mantine-wrapper";
 import { Inter } from "next/font/google"; // Google font import
-import { Shell } from "./components/shell";
 import "./globals.css";
+import Shell from "./shared/core/shell/shell";
 // Import Google font
 const inter = Inter({
   subsets: ["latin"],
