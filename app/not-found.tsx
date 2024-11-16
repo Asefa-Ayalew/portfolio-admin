@@ -1,5 +1,3 @@
-// app/not-found.tsx
-"use client"
 import { Container, Title, Text, Button, Group } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 
@@ -15,7 +13,7 @@ const NotFoundPage = () => {
       <div style={{ textAlign: 'center' }}>
         <Title order={1}>404 - Page Not Found</Title>
         <Text mt="md" size="lg">
-          Sorry, the page you're looking for doesn't exist.
+          Sorry, the page you&apos;re looking for doesn&apos;t exist.
         </Text>
         <Group className='justify-center' mt="md">
           <Button onClick={handleBackToHome} variant="outline">Go back to Homepage</Button>
