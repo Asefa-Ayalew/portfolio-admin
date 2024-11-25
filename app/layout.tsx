@@ -2,6 +2,7 @@ import RootStyleRegistry from "./mantine-wrapper";
 import { Inter } from "next/font/google"; // Google font import
 import "./globals.css";
 import Shell from "./shared/core/shell/shell";
+import { AuthProvider } from "./shared/ui/context/auth-context";
 // Import Google font
 const inter = Inter({
   subsets: ["latin"],
@@ -10,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "My Mantine app",
-  description: "I have followed setup instructions carefully",
+  title: "My portfolio admin",
+  description: "My personal portfolio from admin",
 };
 
 export default function RootLayout({
@@ -24,7 +25,9 @@ export default function RootLayout({
       <head></head>
       <body>
         <RootStyleRegistry>
-          <Shell>{children}</Shell>
+          <AuthProvider>
+            <Shell>{children}</Shell>
+          </AuthProvider>
         </RootStyleRegistry>
       </body>
     </html>

@@ -32,3 +32,35 @@
   .chevron {
     transition: transform 200ms ease;
   }
+  .navbar {
+    @apply h-full w-64 bg-gray-100 shadow-lg flex flex-col;
+  }
+  
+  .header {
+    @apply p-4 border-b border-gray-300;
+  }
+  
+  .links {
+    @apply flex-1 overflow-y-auto mt-2;
+  }
+  
+  .linksInner {
+    @apply space-y-1;
+  }
+  
+  .link {
+    @apply px-4 py-2 rounded-lg hover:bg-gray-300 hover:text-white transition-all;
+  }
+  
+  .linkText {
+    @apply text-sm font-medium no-underline;
+  }
+  
+  .control {
+    @apply px-4 py-3 flex items-center rounded-lg hover:bg-gray-300 hover:text-white transition-all border border-r-4;
+  }
+  
+  .chevron {
+    @apply transition-transform duration-200 ease-in-out;
+  }
+  

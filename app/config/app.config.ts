@@ -7,70 +7,72 @@ import {
   IconTools,
   IconPhone,
   IconCode,
+  IconCup,
 } from "@tabler/icons-react";
 
 export const appConfig = [
-  { label: "Dashboard", icon: IconGauge, link: "/admin/dashboard" },
+  { label: "Dashboard", icon: IconGauge, link: "/dashboard" },
   {
     label: "Profile",
     icon: IconUser,
     initiallyOpened: false,
     links: [
-      { label: "View Profile", link: "/admin/profile/view" },
-      { label: "Edit Profile", link: "/admin/profile/edit" },
-      { label: "Resume", link: "/admin/profile/resume" },
+      { label: "View Profile", link: "/profile/view" },
+      { label: "Edit Profile", link: "/profile/edit" },
+      { label: "Resume", link: "/profile/resume" },
     ],
   },
+  { label: "Education", icon: IconCup, link: "/education" },
   {
     label: "Projects",
     icon: IconBriefcase,
     links: [
-      { label: "Ongoing Projects", link: "/admin/projects/ongoing" },
-      { label: "Completed Projects", link: "/admin/projects/completed" },
-      { label: "Add New Project", link: "/admin/projects/new" },
+      { label: "Ongoing Projects", link: "/projects/ongoing" },
+      { label: "Completed Projects", link: "/projects/completed" },
+      { label: "Add New Project", link: "/projects/new" },
     ],
   },
   {
     label: "Skills",
     icon: IconCode,
     links: [
-      { label: "Technical Skills", link: "/admin/skills/technical" },
-      { label: "Soft Skills", link: "/admin/skills/soft" },
-      { label: "Add New Skill", link: "/admin/skills/new" },
+      { label: "Technical Skills", link: "/skills/technical" },
+      { label: "Soft Skills", link: "/skills/soft" },
+      { label: "Add New Skill", link: "/skills/new" },
     ],
   },
   {
     label: "Services",
     icon: IconTools,
     links: [
-      { label: "Available Services", link: "/admin/services/list" },
-      { label: "Add New Service", link: "/admin/services/new" },
+      { label: "Available Services", link: "/services/list" },
+      { label: "Add New Service", link: "/services/new" },
     ],
   },
   {
     label: "Analytics",
     icon: IconFileAnalytics,
     links: [
-      { label: "Traffic Overview", link: "/admin/analytics/traffic" },
-      { label: "Project Insights", link: "/admin/analytics/projects" },
-      { label: "User Engagement", link: "/admin/analytics/engagement" },
+      { label: "Traffic Overview", link: "/analytics/traffic" },
+      { label: "Project Insights", link: "/analytics/projects" },
+      { label: "User Engagement", link: "/analytics/engagement" },
     ],
   },
   {
     label: "Contact Me",
     icon: IconPhone,
     links: [
-      { label: "Contact Requests", link: "/admin/contact/requests" },
-      { label: "Manage Social Links", link: "/admin/contact/socials" },
+      { label: "Contact Requests", link: "/contact/requests" },
+      { label: "Manage Social Links", link: "/contact/socials" },
     ],
   },
   {
     label: "Settings",
     icon: IconSettings,
     links: [
-      { label: "Account Settings", link: "/admin/settings/account" },
-      { label: "Theme Customization", link: "/admin/settings/theme" },
-      { label: "Privacy & Security", link: "/admin/settings/privacy" },
+      { label: "Account Settings", link: "/settings/account" },
+      { label: "Theme Customization", link: "/settings/theme" },
+      { label: "Privacy & Security", link: "/settings/privacy" },
     ],
   },
 ];

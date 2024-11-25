@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Group,
   Box,
@@ -10,14 +10,15 @@ import {
   rem,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
-import Link from "next/link"; // Ensure you import Link for client-side navigation
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import classes from "./nav-bar-links-group.module.css";
 
 interface LinksGroupProps {
-  readonly icon: React.ElementType; // Changed from React.ReactNode to React.ElementType
-  readonly label: string;
-  readonly initiallyOpened?: boolean;
-  readonly link?: string; // The main link for the group
+  readonly icon: React.ElementType; // Icon component
+  readonly label: string; // Label of the group
+  readonly initiallyOpened?: boolean; // Determines if the group is initially opened
+  readonly link?: string; // Direct link for the group
   readonly links?: { label: string; link: string }[]; // Sub-links for the group
 }
 
@@ -28,23 +29,50 @@ function LinksGroup({
   link,
   links,
 }: LinksGroupProps) {
+  const [opened, setOpened] = useState(initiallyOpened ?? false); // Default to false if initiallyOpened is undefined
+  const pathname = usePathname(); // Get the current pathname
   const hasLinks = Array.isArray(links); // Check if there are sub-links
-  const [opened, setOpened] = useState(initiallyOpened || false);
 
-  // Generate sub-links if they exist
-  const items = (hasLinks ? links : []).map((link) => (
-    <Box key={link.label} className={classes.link}>
-      <Link href={link.link} className={classes.linkText}>
-        {link.label}
-      </Link>
-    </Box>
-  ));
+  // Check if the current path matches the parent route or any of its child routes
+  const isParentActive =
+    pathname === link || (hasLinks && links.some((subLink) => pathname.startsWith(subLink.link)));
+
+  // Use useEffect to keep the collapse open if any sub-link is active
+  useEffect(() => {
+    if (hasLinks) {
+      // Set collapse to open if any child link matches the current path
+      const isActiveChild = links.some((subLink) => pathname.startsWith(subLink.link));
+      setOpened(isActiveChild || !!initiallyOpened); // Open collapse if any child or initially opened
+    }
+  }, [pathname, links, hasLinks, initiallyOpened]);
+
+  // Generate sub-links items, marking active ones
+  const items = hasLinks
+    ? links.map((subLink) => {
+        const isActive = pathname === subLink.link; // Check if the sub-link is active
+        return (
+          <Box
+            key={subLink.label}
+            className={`${classes.link} ${
+              isActive ? "bg-gray-300 text-white" : "text-gray-700"
+            }`}
+          >
+            <Link href={subLink.link} className={classes.linkText}>
+              {subLink.label}
+            </Link>
+          </Box>
+        );
+      })
+    : null;
 
   return (
     <>
       <UnstyledButton
-        onClick={() => setOpened((o) => !o)} // Toggle the collapse for sub-links
-        className={classes.control}
+        onClick={() => setOpened((o) => !o)} // Toggle the collapse
+        className={`${classes.control} ${
+          isParentActive ? "bg-gray-200 text-white" : "text-gray-700"
+        }`}
+        aria-expanded={opened} // Add ARIA attribute for accessibility
       >
         <Group justify="space-between" gap={0}>
           <Box style={{ display: "flex", alignItems: "center" }}>
@@ -53,32 +81,29 @@ function LinksGroup({
             </ThemeIcon>
             <Box ml="md">
               {link ? (
-                // If a `link` exists, render it as a direct Link
                 <Link href={link} className={classes.linkText}>
                   {label}
                 </Link>
               ) : (
-                // Otherwise, just display the label
                 label
               )}
             </Box>
           </Box>
           {hasLinks && (
-            // Render the chevron if the group has sub-links
             <IconChevronRight
               className={classes.chevron}
               stroke={1.5}
               style={{
                 width: rem(16),
                 height: rem(16),
-                transform: opened ? "rotate(-90deg)" : "none", // Rotate the chevron if open
+                transform: opened ? "rotate(-90deg)" : "none", // Rotate the chevron
               }}
             />
           )}
         </Group>
       </UnstyledButton>
 
-      {/* If there are sub-links, show the collapse */}
+      {/* Render the collapse for sub-links */}
       {hasLinks && <Collapse in={opened}>{items}</Collapse>}
     </>
   );

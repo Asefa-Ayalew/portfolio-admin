@@ -14,8 +14,14 @@ import {
   IconLanguage,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 import classes from "./header-menu.module.css";
+import { createClient } from "@supabase/supabase-js";
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_BASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANNON_KEY!
+);
 // Define types for menu items
 interface MenuItem {
   label: string;
@@ -23,23 +29,31 @@ interface MenuItem {
   icon: React.ReactNode;
   action?: () => void;
 }
-
 export function HeaderMenu() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
 
-  // Ensure the default language is set to English when the component mounts
   useEffect(() => {
     if (!i18n.language) {
-      // i18n?.changeLanguage("en"); // Default language is English
+      // i18n.changeLanguage("en"); // Default language is English
     }
   }, [i18n]);
 
-  // Language change function
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);  // Switch to the selected language
+    i18n.changeLanguage(lng); // Switch to the selected language
   };
 
-  // Define language menu items
+  // Handle Logout
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      localStorage.removeItem("userSession");  // Clear session from localStorage
+      router.push("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const languageMenu: MenuItem[] = [
     {
       label: "English",
@@ -57,34 +71,34 @@ export function HeaderMenu() {
   const userMenu: (MenuItem | "divider")[] = [
     {
       label: t("profile"),
-      link: "/admin/profile",
+      link: "profile",
       icon: <IconUser size="1rem" />,
     },
     {
       label: t("change_password"),
-      link: "/admin/change-password",
+      link: "change-password",
       icon: <IconKey size="1rem" />,
     },
     {
       label: t("settings"),
-      link: "/admin/settings",
+      link: "settings",
       icon: <IconSettings size="1rem" />,
     },
-    "divider", // Divider after settings
+    "divider",
     {
       label: t("faq"),
-      link: "/admin/faq",
+      link: "faq",
       icon: <IconQuestionMark size="1rem" />,
     },
     {
       label: t("help"),
-      link: "/admin/help",
+      link: "help",
       icon: <IconHelp size="1rem" />,
     },
-    "divider", // Divider after help
+    "divider",
     {
       label: t("logout"),
-      action: () => console.log("Logging out..."),
+      action: handleLogout,
       icon: <IconLogout size="1rem" />,
     },
   ];
@@ -123,13 +137,9 @@ export function HeaderMenu() {
   return (
     <header className={classes.header}>
       <div className={classes.inner}>
-        <Group gap={5} className="space-x-2 mr-4 justify-center">
+        <Group gap={5} className="space-x-2 mr-4 justify-center mt-2">
           {/* Language Menu */}
-          <Menu
-            trigger="hover"
-            transitionProps={{ exitDuration: 0 }}
-            withinPortal
-          >
+          <Menu trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
             <Menu.Target>
               <Link
                 href="#"
@@ -149,11 +159,7 @@ export function HeaderMenu() {
           </Menu>
 
           {/* User Menu */}
-          <Menu
-            trigger="hover"
-            transitionProps={{ exitDuration: 0 }}
-            withinPortal
-          >
+          <Menu trigger="hover" transitionProps={{ exitDuration: 0 }} withinPortal>
             <Menu.Target>
               <Link
                 href="#"
