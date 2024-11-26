@@ -31,25 +31,27 @@ function LinksGroup({
 }: LinksGroupProps) {
   const [opened, setOpened] = useState(initiallyOpened ?? false); // Default to false if initiallyOpened is undefined
   const pathname = usePathname(); // Get the current pathname
-  const hasLinks = Array.isArray(links); // Check if there are sub-links
+  const hasLinks = Array.isArray(links) && links.length > 0; // Check if there are sub-links
 
-  // Check if the current path matches the parent route or any of its child routes
-  const isParentActive =
-    pathname === link || (hasLinks && links.some((subLink) => pathname.startsWith(subLink.link)));
+  // Check if the current path matches the parent route
+  const isParentActive = link ? pathname.startsWith(link) : false;
 
-  // Use useEffect to keep the collapse open if any sub-link is active
+  // Check if any child link matches the current path or its sub-route
+  const isChildActive =
+    hasLinks &&
+    links.some((subLink) => pathname.startsWith(subLink.link));
+
+  // Use `useEffect` to open the collapse if any child link is active
   useEffect(() => {
     if (hasLinks) {
-      // Set collapse to open if any child link matches the current path
-      const isActiveChild = links.some((subLink) => pathname.startsWith(subLink.link));
-      setOpened(isActiveChild || !!initiallyOpened); // Open collapse if any child or initially opened
+      setOpened(isChildActive || !!initiallyOpened); // Open collapse if any child is active
     }
-  }, [pathname, links, hasLinks, initiallyOpened]);
+  }, [pathname, links, hasLinks, initiallyOpened, isChildActive]);
 
   // Generate sub-links items, marking active ones
   const items = hasLinks
     ? links.map((subLink) => {
-        const isActive = pathname === subLink.link; // Check if the sub-link is active
+        const isActive = pathname.startsWith(subLink.link); // Check if the sub-link or its sub-route is active
         return (
           <Box
             key={subLink.label}
@@ -68,9 +70,17 @@ function LinksGroup({
   return (
     <>
       <UnstyledButton
-        onClick={() => setOpened((o) => !o)} // Toggle the collapse
+        onClick={() => {
+          if (!hasLinks && link) {
+            // If no submenus, navigate to the link
+            window.location.href = link;
+          } else {
+            // Toggle the collapse for menus with submenus
+            setOpened((o) => !o);
+          }
+        }}
         className={`${classes.control} ${
-          isParentActive ? "bg-gray-200 text-white" : "text-gray-700"
+          isParentActive && !hasLinks ? "bg-gray-300 text-white" : "text-gray-700"
         }`}
         aria-expanded={opened} // Add ARIA attribute for accessibility
       >
@@ -79,15 +89,7 @@ function LinksGroup({
             <ThemeIcon variant="light" size={30}>
               <Icon style={{ width: rem(18), height: rem(18) }} />
             </ThemeIcon>
-            <Box ml="md">
-              {link ? (
-                <Link href={link} className={classes.linkText}>
-                  {label}
-                </Link>
-              ) : (
-                label
-              )}
-            </Box>
+            <Box ml="md">{label}</Box>
           </Box>
           {hasLinks && (
             <IconChevronRight

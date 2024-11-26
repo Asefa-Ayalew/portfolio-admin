@@ -11,11 +11,10 @@ export function SideNav() {
   return (
     <nav className={classes.navbar}>
       <Box className={classes.header}>
-        <Group className="font-black text-green-600 text-xl items-center">
+        <Group className="font-black text-green-600 text-xl text-center m-2 pl-4">
           Asefa Ayalew
         </Group>
       </Box>
-      <Divider my="xs" />
       <ScrollArea className={classes.links}>
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>

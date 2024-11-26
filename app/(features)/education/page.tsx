@@ -31,30 +31,31 @@ const EducationPage = () => {
   }
   const actions = [
     {
-      label: 'Edit',
+      label: "Edit",
       icon: IconEdit,
       onClick: (row: any) => alert(`Edit action for ${row.name}`),
     },
     {
-      label: 'Delete',
+      label: "Delete",
       icon: IconTrash,
       onClick: (row: any) => alert(`Delete action for ${row.name}`),
     },
   ];
+  const config = {
+    visibleColumns: [
+      { name: "Institution", key: "institution" },
+      { name: "Degree", key: "degree" },
+      { name: "Start year", key: "startYear" },
+      { name: "End year", key: "endYear" },
+      { name: "Description", key: "description" },
+    ],
+  };
 
   return (
     <div>
       <EntityList
         data={educations}
-        config={{
-          visibleColumns: [
-            { name: "Institution", key: "institution" },
-            { name: "Degree", key: "degree" },
-            { name: "Start year", key: "startYear" },
-            { name: "End year", key: "endYear" },
-            { name: "Description", key: "description" },
-          ],
-        }}
+        config={config}
         totalCount={totalEducation ?? 0}
         currentPage={currentPage}
         perPage={perPage}
