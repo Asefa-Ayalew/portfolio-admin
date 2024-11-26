@@ -45,7 +45,7 @@ interface EntityListProps {
   perPage: number;
   onPageChange: (page: number) => void;
   onPerPageChange: (perPage: number) => void;
-  actions: Action[]
+  actions: Action[];
 }
 
 interface ThProps {
@@ -81,7 +81,7 @@ export function EntityList({
   data,
   config,
   totalCount,
-  actions
+  actions,
 }: EntityListProps) {
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(10);
@@ -122,7 +122,7 @@ export function EntityList({
   const rows = sortedData.map((row, rowIndex) => (
     <Table.Tr key={rowIndex} className="hover:bg-gray-200">
       {config?.visibleColumns.map((column) => (
-        <Table.Td key={column.key}>{row[column.key] || '-'}</Table.Td>
+        <Table.Td key={column.key}>{row[column.key] || "-"}</Table.Td>
       ))}
       <Table.Td>
         <ActionPopover actions={actions} row={row} />
@@ -195,14 +195,14 @@ export function EntityList({
       <Box className="mt-4 flex justify-end items-center m-2 space-x-2">
         <Pagination
           total={Math.ceil(totalCount / perPage)}
-          value={currentPage} 
+          value={currentPage}
           onChange={(page) => setCurrentPage(page)}
           siblings={1}
           size="sm"
         />
 
         <Select
-          value={perPage.toString()} 
+          value={perPage.toString()}
           onChange={(value) => setPerPage(Number(value))}
           data={[
             { value: "5", label: "5" },
@@ -210,7 +210,7 @@ export function EntityList({
             { value: "20", label: "20" },
             { value: "30", label: "30" },
           ]}
-          className="w-24" 
+          className="w-24"
         />
       </Box>
     </ScrollArea>
@@ -228,19 +228,41 @@ function ActionPopover({ actions, row }: { actions: Action[]; row: any }) {
       shadow="md"
     >
       <Popover.Target>
-        <ActionIcon onClick={() => setOpened((o) => !o)}>
-          <IconDotsVertical size={16}/>
+        <ActionIcon
+          onClick={() => setOpened((o) => !o)}
+          styles={(theme) => ({
+            root: {
+              backgroundColor: "transparent", // No background
+              ":hover": {
+                backgroundColor: theme.colors.gray[0], // Light gray hover
+              },
+            },
+          })}
+        >
+          <IconDotsVertical size={16} className="text-gray-900" />
         </ActionIcon>
       </Popover.Target>
       <Popover.Dropdown>
         <Stack gap="xs">
           {actions.map((action, index) => (
-            <Button
+              <Button
               key={index}
               leftSection={<action.icon size={16} />}
-              variant="black"
+              variant="white"
               size="xs"
               onClick={() => action.onClick(row)}
+              style={{
+                backgroundColor: "transparent", // Ensure no background color by default
+                color: "gray-900", // Ensure text color is gray-900
+              }}
+              onMouseEnter={(e) => {
+                // Apply hover effect on mouse enter
+                e.currentTarget.style.backgroundColor = "#e5e7eb";
+              }}
+              onMouseLeave={(e) => {
+                // Reset hover effect on mouse leave
+                e.currentTarget.style.backgroundColor = "transparent";
+              }}
             >
               {action.label}
             </Button>
