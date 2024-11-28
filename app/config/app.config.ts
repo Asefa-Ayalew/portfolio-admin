@@ -12,16 +12,7 @@ import {
 
 export const appConfig = [
   { label: "Dashboard", icon: IconGauge, link: "/dashboard" },
-  {
-    label: "Profile",
-    icon: IconUser,
-    initiallyOpened: false,
-    links: [
-      { label: "View Profile", link: "/profile/view" },
-      { label: "Edit Profile", link: "/profile/edit" },
-      { label: "Resume", link: "/profile/resume" },
-    ],
-  },
+  { label: "Profile", icon: IconUser, link: "profile" },
   { label: "Education", icon: IconCup, link: "/education" },
   {
     label: "Projects",
@@ -29,7 +20,6 @@ export const appConfig = [
     links: [
       { label: "Ongoing Projects", link: "/projects/ongoing" },
       { label: "Completed Projects", link: "/projects/completed" },
-      { label: "Add New Project", link: "/projects/new" },
     ],
   },
   {
@@ -38,28 +28,11 @@ export const appConfig = [
     links: [
       { label: "Technical Skills", link: "/skills/technical" },
       { label: "Soft Skills", link: "/skills/soft" },
-      { label: "Add New Skill", link: "/skills/new" },
     ],
   },
+  { label: "Services", icon: IconTools, link: "services" },
   {
-    label: "Services",
-    icon: IconTools,
-    links: [
-      { label: "Available Services", link: "/services/list" },
-      { label: "Add New Service", link: "/services/new" },
-    ],
-  },
-  {
-    label: "Analytics",
-    icon: IconFileAnalytics,
-    links: [
-      { label: "Traffic Overview", link: "/analytics/traffic" },
-      { label: "Project Insights", link: "/analytics/projects" },
-      { label: "User Engagement", link: "/analytics/engagement" },
-    ],
-  },
-  {
-    label: "Contact Me",
+    label: "Contacts",
     icon: IconPhone,
     links: [
       { label: "Contact Requests", link: "/contact/requests" },

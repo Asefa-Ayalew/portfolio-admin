@@ -4,7 +4,8 @@ import { TextInput, Textarea, Button, Group, Box } from '@mantine/core';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEducationStore } from '../store/education.store';
+import { EntityApi } from '@/app/shared/ui/entity/api/entity-api';
+import { useEntityStore } from '@/app/shared/ui/entity/store/entity-store';
 
 // Zod schema for form validation
 export const educationSchema = z.object({
@@ -19,8 +20,11 @@ export const educationSchema = z.object({
 // Infer the type from the schema
 type Education = z.infer<typeof educationSchema>;
 
+const educationApi = EntityApi<Education>("education");
+const useEducationStore = useEntityStore<Education>(educationApi);
+
 const EducationForm: React.FC<{ editMode: 'new' | 'detail' }> = ({ editMode }) => {
-  const {createEducation} = useEducationStore();
+  const {create} = useEducationStore();
   const {
     register,
     handleSubmit,
@@ -31,7 +35,7 @@ const EducationForm: React.FC<{ editMode: 'new' | 'detail' }> = ({ editMode }) =
 
   const onSubmit: SubmitHandler<Education> = async (data) => {
     try {
-      await createEducation(data);
+      await create(data);
       console.log('Education added successfully:', data);
     } catch (error) {
       console.error('Error adding education:', error);

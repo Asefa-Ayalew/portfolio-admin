@@ -37,9 +37,7 @@ interface ColumnConfig {
 
 interface EntityListProps {
   data: any[];
-  config: {
-    visibleColumns: ColumnConfig[];
-  };
+  config: { visibleColumns: ColumnConfig[] };
   totalCount: number;
   currentPage: number;
   perPage: number;
@@ -68,9 +66,11 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
           <Text fw={500} fz="sm">
             {children}
           </Text>
-          <Center>
-            <Icon size={16} stroke={1.5} />
-          </Center>
+          {Icon && (
+            <Center>
+              <Icon size={16} stroke={1.5} />
+            </Center>
+          )}
         </Group>
       </UnstyledButton>
     </Table.Th>
@@ -81,11 +81,13 @@ export function EntityList({
   data,
   config,
   totalCount,
+  currentPage,
+  perPage,
+  onPageChange,
+  onPerPageChange,
   actions,
 }: EntityListProps) {
   const [search, setSearch] = useState("");
-  const [perPage, setPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
@@ -96,14 +98,11 @@ export function EntityList({
     setReverseSortDirection(reversed);
     setSortBy(key);
     setSortedData(
-      [...data].sort((a, b) => {
-        const valueA = a[key]?.toString() || "";
-        const valueB = b[key]?.toString() || "";
-
-        return reversed
-          ? valueB.localeCompare(valueA)
-          : valueA.localeCompare(valueB);
-      })
+      [...data].sort((a, b) =>
+        reversed
+          ? b[key]?.toString().localeCompare(a[key]?.toString())
+          : a[key]?.toString().localeCompare(b[key]?.toString())
+      )
     );
   };
 
@@ -191,19 +190,17 @@ export function EntityList({
           )}
         </Table.Tbody>
       </Table>
-      {/* Pagination Component */}
       <Box className="mt-4 flex justify-end items-center m-2 space-x-2">
         <Pagination
           total={Math.ceil(totalCount / perPage)}
           value={currentPage}
-          onChange={(page) => setCurrentPage(page)}
+          onChange={onPageChange}
           siblings={1}
           size="sm"
         />
-
         <Select
-          value={perPage.toString()}
-          onChange={(value) => setPerPage(Number(value))}
+          value={perPage?.toString()}
+          onChange={(value) => onPerPageChange(Number(value))}
           data={[
             { value: "5", label: "5" },
             { value: "10", label: "10" },
@@ -216,6 +213,7 @@ export function EntityList({
     </ScrollArea>
   );
 }
+
 function ActionPopover({ actions, row }: { actions: Action[]; row: any }) {
   const [opened, setOpened] = useState(false);
 

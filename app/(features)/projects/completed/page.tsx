@@ -4,20 +4,20 @@ import { EntityList } from "@/app/shared/ui/entity/entity-list";
 import { Loader } from "@mantine/core"; // For loading indicator
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
-import { Education } from "@/app/models/education";
+import { Project } from "@/app/models/projects";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
 
-const educationApi = EntityApi<Education>("education");
-const useEducationStore = useEntityStore<Education>(educationApi);
+const projectApi = EntityApi<Project>("projects");
+const useProjectStore = useEntityStore<Project>(projectApi);
 
-const EducationPage = () => {
-  const { data:educations, totalItems, isLoading, getAll } =
-    useEducationStore();
+const ProjectPage = () => {
+  const { data:projects, totalItems, isLoading, getAll } =
+    useProjectStore();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  // Call getEducations only when currentPage or perPage changes
+  // Call getProjects only when currentPage or perPage changes
   useEffect(() => {
     getAll(currentPage, perPage);
   }, [currentPage, perPage]);
@@ -49,18 +49,18 @@ const EducationPage = () => {
   ];
   const config = {
     visibleColumns: [
-      { name: "Institution", key: "institution" },
-      { name: "Degree", key: "degree" },
-      { name: "Start year", key: "startYear" },
-      { name: "End year", key: "endYear" },
-      { name: "Description", key: "description" },
+      { name: "Title", key: "title" },
+      { name: "Technologies", key: "technologies" },
+      { name: "Role", key: "role" },
+      { name: "startDate", key: "endDate" },
+      { name: "features", key: "features" },
     ],
   };
 
   return (
     <div>
       <EntityList
-        data={educations}
+        data={projects}
         config={config}
         totalCount={totalItems ?? 0}
         currentPage={currentPage}
@@ -73,4 +73,4 @@ const EducationPage = () => {
   );
 };
 
-export default EducationPage;
+export default ProjectPage;
