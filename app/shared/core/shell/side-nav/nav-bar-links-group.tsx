@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import classes from "./nav-bar-links-group.module.css";
 
 interface LinksGroupProps {
@@ -31,6 +31,7 @@ function LinksGroup({
 }: LinksGroupProps) {
   const [opened, setOpened] = useState(initiallyOpened ?? false); // Default to false if initiallyOpened is undefined
   const pathname = usePathname(); // Get the current pathname
+  const router = useRouter();
   const hasLinks = Array.isArray(links) && links.length > 0; // Check if there are sub-links
 
   // Check if the current path matches the parent route
@@ -69,41 +70,41 @@ function LinksGroup({
 
   return (
     <>
-      <UnstyledButton
-        onClick={() => {
-          if (!hasLinks && link) {
-            // If no submenus, navigate to the link
-            window.location.href = link;
-          } else {
-            // Toggle the collapse for menus with submenus
-            setOpened((o) => !o);
-          }
+    <UnstyledButton
+  onClick={() => {
+    if (!hasLinks && link) {
+      // Use client-side routing
+      router.push(link);
+    } else {
+      // Toggle the collapse for menus with submenus
+      setOpened((o) => !o);
+    }
+  }}
+  className={`${classes.control} ${
+    isParentActive && !hasLinks ? "bg-gray-300 text-white" : "text-gray-700"
+  }`}
+  aria-expanded={opened} // Add ARIA attribute for accessibility
+>
+  <Group justify="space-between" gap={0}>
+    <Box style={{ display: "flex", alignItems: "center" }}>
+      <ThemeIcon variant="light" size={30}>
+        <Icon style={{ width: rem(18), height: rem(18) }} />
+      </ThemeIcon>
+      <Box ml="md">{label}</Box>
+    </Box>
+    {hasLinks && (
+      <IconChevronRight
+        className={classes.chevron}
+        stroke={1.5}
+        style={{
+          width: rem(16),
+          height: rem(16),
+          transform: opened ? "rotate(-90deg)" : "none",
         }}
-        className={`${classes.control} ${
-          isParentActive && !hasLinks ? "bg-gray-300 text-white" : "text-gray-700"
-        }`}
-        aria-expanded={opened} // Add ARIA attribute for accessibility
-      >
-        <Group justify="space-between" gap={0}>
-          <Box style={{ display: "flex", alignItems: "center" }}>
-            <ThemeIcon variant="light" size={30}>
-              <Icon style={{ width: rem(18), height: rem(18) }} />
-            </ThemeIcon>
-            <Box ml="md">{label}</Box>
-          </Box>
-          {hasLinks && (
-            <IconChevronRight
-              className={classes.chevron}
-              stroke={1.5}
-              style={{
-                width: rem(16),
-                height: rem(16),
-                transform: opened ? "rotate(-90deg)" : "none", // Rotate the chevron
-              }}
-            />
-          )}
-        </Group>
-      </UnstyledButton>
+      />
+    )}
+  </Group>
+</UnstyledButton>
 
       {/* Render the collapse for sub-links */}
       {hasLinks && <Collapse in={opened}>{items}</Collapse>}

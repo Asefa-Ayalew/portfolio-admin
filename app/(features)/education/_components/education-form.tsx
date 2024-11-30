@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { TextInput, Textarea, Button, Group, Box } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +9,7 @@ import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
 import { useParams } from "next/navigation";
 import { messagingNotification } from "@/app/shared/ui/notification/notification";
+import { IconDeviceFloppy, IconTrash } from "@tabler/icons-react";
 
 // Zod schema for form validation
 export const educationSchema = z.object({
@@ -31,7 +33,7 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
   const params = useParams();
   const id = params.id;
 
-  const { getById, selectedItem, create, update, creating, updating } =
+  const { getById, selectedItem, create, update, creating, updating, deleting } =
     useEducationStore();
   const {
     register,
@@ -95,9 +97,26 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
     }
   }, [selectedItem, editMode, reset]);
 
+  const handleDelete = async () => {
+    try {
+      await delete selectedItem?.id;
+      messagingNotification({
+        title: "Success",
+        color: "green",
+        message: "Project successfully deleted",
+      });
+    } catch (error) {
+      messagingNotification({
+        title: "Error",
+        color: "red",
+        message: "Sorry project not deleted successfully",
+      });
+    }
+  };
+
   return (
     <Box className="w-full m-2 p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-center mb-6">
+      <h2 className="font-semibold mb-6">
         {editMode === "new" ? "Add Education" : "Edit Education"}
       </h2>
 
@@ -142,10 +161,21 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
           <Button
             type="submit"
             color="green"
+            leftSection={<IconDeviceFloppy size={16}/>}
             loading={editMode === "new" ? creating : updating}
           >
             {editMode === "new" ? "Submit" : "Update"}
           </Button>
+          <Button
+          type="button"
+          color="red"
+          leftSection={<IconTrash size={16}/>}
+          loading={deleting}
+          onClick={async () => {
+            await handleDelete(); 
+          }}
+          className="text-white font-bold"
+          > {"Delete"}</Button>
         </Group>
       </form>
     </Box>

@@ -1,5 +1,4 @@
 import {
-  IconFileAnalytics,
   IconGauge,
   IconUser,
   IconBriefcase,
@@ -23,7 +22,7 @@ export const appConfig = [
       { label: "Soft Skills", link: "/skills/soft" },
     ],
   },
-  { label: "Services", icon: IconTools, link: "services" },
+  { label: "Services", icon: IconTools, link: "/services" },
   {
     label: "Contacts",
     icon: IconPhone,

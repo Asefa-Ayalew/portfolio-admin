@@ -1,32 +1,34 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import React, { useEffect, useState } from "react";
 import { EntityList } from "@/app/shared/ui/entity/entity-list";
 import { Loader } from "@mantine/core"; // For loading indicator
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
-import { Education } from "@/app/models/education";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
 import { useRouter } from "next/navigation";
+import { Service } from "@/app/models/service";
 
-const educationApi = EntityApi<Education>("education");
-const useEducationStore = useEntityStore<Education>(educationApi);
-const EducationPage = () => {
+const serviceApi = EntityApi<Service>("services");
+const useServiceStore = useEntityStore<Service>(serviceApi);
+
+const ServicePage = () => {
+
   const {
-    data: educations,
+    data: services,
     totalItems,
     isLoading,
+    delete: deleteService,
     getAll,
-    delete: deleteEducation,
-  } = useEducationStore();
+  } = useServiceStore();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const router = useRouter();
 
-  // Call getEducations only when currentPage or perPage changes
+  // Call getServices only when currentPage or perPage changes
   useEffect(() => {
     getAll(currentPage, perPage);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, perPage]);
 
   // Pagination and perPage change handlers
@@ -43,40 +45,37 @@ const EducationPage = () => {
   if (isLoading) {
     return <Loader size="xl" />;
   }
-  const handleDelete = async (row: Education) => {
+  const handleDelete = async (row: Service) => {
     console.log("row", row);
-    await deleteEducation(String(row.id));
+    await deleteService(String(row.id));
   };
-  const handleEdit = async (row: Education) => {
-    router.push(`education/detail/${row.id}`);
-  };
-  const config = {
-    visibleColumns: [
-      { name: "Institution", key: "institution" },
-      { name: "Degree", key: "degree" },
-      { name: "Start year", key: "startYear" },
-      { name: "End year", key: "endYear" },
-      { name: "Description", key: "description" },
-    ],
+  const handleEdit = async (row: Service) => {
+    router.push(`services/detail/${row.id}`);
   };
   const actions = [
     {
       label: "Edit",
       icon: IconEdit,
       color: "black",
-      onClick: (row: Education) => handleEdit(row),
+      onClick: (row: Service) => handleEdit(row),
     },
     {
       label: "Delete",
       icon: IconTrash,
       color: "red",
-      onClick: (row: Education) => handleDelete(row), // Pass the row ID to delete
+      onClick: (row: Service) => handleDelete(row), // Pass the row ID to delete
     },
   ];
+  const config = {
+    visibleColumns: [
+      { name: "Title", key: "title" },
+      { name: "Description", key: "description" }
+    ],
+  };
   return (
     <div>
       <EntityList
-        data={educations}
+        data={services}
         config={config}
         totalCount={totalItems ?? 0}
         currentPage={currentPage}
@@ -84,9 +83,10 @@ const EducationPage = () => {
         onPageChange={handlePaginationChange}
         onPerPageChange={handlePerPageChange}
         actions={actions}
+        showDetail={true}
       />
     </div>
   );
 };
 
-export default EducationPage;
+export default ServicePage;

@@ -19,12 +19,13 @@ import {
 } from "@mantine/core";
 import {
   IconChevronDown,
+  IconChevronRight,
   IconChevronUp,
   IconDotsVertical,
   IconPlus,
   IconSearch,
 } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 interface Action {
   label: string;
   icon: React.ElementType;
@@ -45,6 +46,7 @@ interface EntityListProps {
   onPageChange: (page: number) => void;
   onPerPageChange: (perPage: number) => void;
   actions: Action[];
+  showDetail?: boolean;
 }
 
 interface ThProps {
@@ -87,12 +89,15 @@ export function EntityList({
   onPageChange,
   onPerPageChange,
   actions,
+  showDetail
 }: EntityListProps) {
   const [search, setSearch] = useState("");
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const router = useRouter();
+  const pathname = usePathname(); // Get the current path
+
 
   const setSorting = (key: string) => {
     const reversed = key === sortBy ? !reverseSortDirection : false;
@@ -125,14 +130,32 @@ export function EntityList({
         <Table.Td key={column.key}>{row[column.key] || "-"}</Table.Td>
       ))}
       <Table.Td>
+      {showDetail ? (
+        <ActionIcon
+          onClick={() => router.push(`${pathname}/detail/${row.id}`)} // Replace `row.id` with the appropriate ID key
+          styles={(theme) => ({
+            root: {
+              backgroundColor: "transparent", // No background
+              ":hover": {
+                backgroundColor: theme.colors.gray[0], 
+                // Light gray hover
+              },
+            },
+          })}
+        >
+        <IconChevronRight size={16} className="text-gray-900" />
+        </ActionIcon>
+      ) : (
         <ActionPopover actions={actions} row={row} />
-      </Table.Td>
+      )}
+    </Table.Td>
     </Table.Tr>
   ));
 
   const newAction = () => {
-    router.push(`${window.location.pathname}/new`);
+    router.push(`${pathname}/new`);
   };
+  
 
   return (
     <ScrollArea className="m-3 bg-white border border-gray-200">

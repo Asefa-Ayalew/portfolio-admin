@@ -1,32 +1,34 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import React, { useEffect, useState } from "react";
 import { EntityList } from "@/app/shared/ui/entity/entity-list";
 import { Loader } from "@mantine/core"; // For loading indicator
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
-import { Education } from "@/app/models/education";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
 import { useRouter } from "next/navigation";
+import { SoftSkill } from "@/app/models/soft-skill";
 
-const educationApi = EntityApi<Education>("education");
-const useEducationStore = useEntityStore<Education>(educationApi);
-const EducationPage = () => {
+const softSkillApi = EntityApi<SoftSkill>("soft_skills");
+const useSoftSkillStore = useEntityStore<SoftSkill>(softSkillApi);
+
+const SoftSkillPage = () => {
+
   const {
-    data: educations,
+    data: softSkills,
     totalItems,
     isLoading,
+    delete: deleteSoftSkill,
     getAll,
-    delete: deleteEducation,
-  } = useEducationStore();
+  } = useSoftSkillStore();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const router = useRouter();
 
-  // Call getEducations only when currentPage or perPage changes
+  // Call getSoftSkills only when currentPage or perPage changes
   useEffect(() => {
     getAll(currentPage, perPage);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, perPage]);
 
   // Pagination and perPage change handlers
@@ -43,40 +45,38 @@ const EducationPage = () => {
   if (isLoading) {
     return <Loader size="xl" />;
   }
-  const handleDelete = async (row: Education) => {
+  const handleDelete = async (row: SoftSkill) => {
     console.log("row", row);
-    await deleteEducation(String(row.id));
+    await deleteSoftSkill(row.id);
   };
-  const handleEdit = async (row: Education) => {
-    router.push(`education/detail/${row.id}`);
-  };
-  const config = {
-    visibleColumns: [
-      { name: "Institution", key: "institution" },
-      { name: "Degree", key: "degree" },
-      { name: "Start year", key: "startYear" },
-      { name: "End year", key: "endYear" },
-      { name: "Description", key: "description" },
-    ],
+  const handleEdit = async (row: SoftSkill) => {
+    router.push(`skills/soft/detail/${row.id}`);
   };
   const actions = [
     {
       label: "Edit",
       icon: IconEdit,
       color: "black",
-      onClick: (row: Education) => handleEdit(row),
+      onClick: (row: SoftSkill) => handleEdit(row),
     },
     {
       label: "Delete",
       icon: IconTrash,
       color: "red",
-      onClick: (row: Education) => handleDelete(row), // Pass the row ID to delete
+      onClick: (row: SoftSkill) => handleDelete(row), // Pass the row ID to delete
     },
   ];
+  const config = {
+    visibleColumns: [
+      { name: "Name", key: "name" },
+      { name: "Description", key: "description" },
+      { name: "Proficiency", key: "proficiency" }
+    ],
+  };
   return (
     <div>
       <EntityList
-        data={educations}
+        data={softSkills}
         config={config}
         totalCount={totalItems ?? 0}
         currentPage={currentPage}
@@ -84,9 +84,10 @@ const EducationPage = () => {
         onPageChange={handlePaginationChange}
         onPerPageChange={handlePerPageChange}
         actions={actions}
+        showDetail={true}
       />
     </div>
   );
 };
 
-export default EducationPage;
+export default SoftSkillPage;

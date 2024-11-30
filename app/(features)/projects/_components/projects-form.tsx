@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { Project } from "@/app/models/projects";
@@ -6,6 +7,7 @@ import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
 import { messagingNotification } from "@/app/shared/ui/notification/notification";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Group, Textarea, TextInput } from "@mantine/core";
+import { IconDeviceFloppy, IconTrash } from "@tabler/icons-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -34,8 +36,15 @@ const useProjectStore = useEntityStore<Project>(projectApi);
 const ProjectsForm: React.FC<{
   editMode: "new" | "detail";
 }> = ({ editMode }) => {
-  const { selectedItem, getById, error, create, update, creating, updating } =
-    useProjectStore();
+  const {
+    selectedItem,
+    getById,
+    create,
+    update,
+    creating,
+    updating,
+    deleting,
+  } = useProjectStore();
   const params = useParams();
   const id = params?.id;
 
@@ -81,6 +90,23 @@ const ProjectsForm: React.FC<{
           color: "red",
         });
       }
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await delete selectedItem?.id;
+      messagingNotification({
+        title: "Success",
+        color: "green",
+        message: "Project successfully deleted",
+      });
+    } catch (error) {
+      messagingNotification({
+        title: "Error",
+        color: "red",
+        message: "Sorry project not deleted successfully",
+      });
     }
   };
 
@@ -207,14 +233,29 @@ const ProjectsForm: React.FC<{
           error={errors.description?.message}
         />
 
-        <Group justify="start" className="mt-6">
+        <Group justify="start" className="mt-6 flex">
           <Button
             type="submit"
             color="green"
             loading={editMode === "new" ? creating : updating}
+            leftSection={<IconDeviceFloppy size={16} />}
           >
             {editMode === "new" ? "Submit" : "Update"}
           </Button>
+          {editMode === "detail" && (
+            <Button
+              type="button"
+              color="red"
+              leftSection={<IconTrash size={16} />}
+              loading={deleting}
+              onClick={async () => {
+                await handleDelete(); 
+              }}
+              className="text-white font-bold"
+            >
+              {"Delete"}
+            </Button>
+          )}
         </Group>
       </form>
     </Box>

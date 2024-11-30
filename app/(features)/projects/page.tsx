@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import React, { useEffect, useState } from "react";
 import { EntityList } from "@/app/shared/ui/entity/entity-list";
@@ -44,9 +45,9 @@ const ProjectPage = () => {
   if (isLoading) {
     return <Loader size="xl" />;
   }
-  const handleDelete = async (row: any) => {
+  const handleDelete = async (row: Project) => {
     console.log("row", row);
-    await deleteProject(row.id);
+    await deleteProject(String(row.id));
   };
   const handleEdit = async (row: Project) => {
     router.push(`projects/detail/${row.id}`);
@@ -56,13 +57,13 @@ const ProjectPage = () => {
       label: "Edit",
       icon: IconEdit,
       color: "black",
-      onClick: (row: any) => handleEdit(row),
+      onClick: (row: Project) => handleEdit(row),
     },
     {
       label: "Delete",
       icon: IconTrash,
       color: "red",
-      onClick: (row: any) => handleDelete(row), // Pass the row ID to delete
+      onClick: (row: Project) => handleDelete(row), // Pass the row ID to delete
     },
   ];
   const config = {
@@ -85,6 +86,7 @@ const ProjectPage = () => {
         onPageChange={handlePaginationChange}
         onPerPageChange={handlePerPageChange}
         actions={actions}
+        showDetail={true}
       />
     </div>
   );

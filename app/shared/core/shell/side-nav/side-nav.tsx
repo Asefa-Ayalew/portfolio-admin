@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Divider, Group, ScrollArea } from "@mantine/core";
+import { Box, Group, ScrollArea } from "@mantine/core";
 import LinksGroup from "./nav-bar-links-group";
 import { appConfig } from "@/app/config/app.config";
 import classes from "./side-nav.module.css";
