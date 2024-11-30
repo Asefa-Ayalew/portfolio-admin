@@ -14,7 +14,7 @@ const Dashboard = () => {
               Dashboard
             </Title>
             <Text size="sm" className="opacity-90">
-            <p>Welcome, Here&apos;s a summary of my portfolio.</p>
+              Welcome, Here&apos;s a summary of my portfolio.
             </Text>
           </div>
           <Button variant="light" color="white" radius="xl">
