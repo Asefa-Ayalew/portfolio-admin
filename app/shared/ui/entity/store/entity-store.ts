@@ -7,6 +7,9 @@ interface StoreState<T> {
   totalItems: number | null;
   isLoading: boolean;
   detailLoading: boolean;
+  creating: boolean;
+  updating: boolean;
+  deleting: boolean;
   error?: string;
   getAll: (page: number, perPage: number) => Promise<void>;
   getById: (id: string) => Promise<void>;
@@ -22,6 +25,9 @@ export const useEntityStore = <T>(api: ReturnType<typeof EntityApi<T>>) =>
     totalItems: 0,
     isLoading: false,
     detailLoading: false,
+    creating: false,
+    updating: false,
+    deleting: false,
     error: undefined,
 
     getAll: async (page, perPage) => {
@@ -45,7 +51,12 @@ export const useEntityStore = <T>(api: ReturnType<typeof EntityApi<T>>) =>
       set({ detailLoading: true, error: undefined });
       try {
         const selectedItem = await api.getById(id);
-        set({ selectedItem, detailLoading: false });
+        set(prevState => {
+          if (prevState.selectedItem !== selectedItem) {
+            return { selectedItem, detailLoading: false };
+          }
+          return prevState;  // Prevent unnecessary state updates
+        });
       } catch (error) {
         set({
           error: error instanceof Error ? error.message : "Unknown error",
@@ -55,43 +66,49 @@ export const useEntityStore = <T>(api: ReturnType<typeof EntityApi<T>>) =>
     },
 
     create: async (payload) => {
-      set({ isLoading: true, error: undefined });
+      set({ creating: true, error: undefined });
       try {
         const newItem = await api.create(payload);
         set((state) => ({
           data: [...state.data, newItem],
-          isLoading: false,
+          creating: false,
         }));
       } catch (error) {
         set({
           error: error instanceof Error ? error.message : "Unknown error",
-          isLoading: false,
+          creating: false,
         });
       }
     },
 
     update: async (id, payload) => {
-      set({ isLoading: true, error: undefined });
+      set({ updating: true, error: undefined });
       try {
         await api.update(id, payload);
         await useEntityStore(api).getState().getAll(1, 10); // Refresh list
+        set((state)=>({
+          updating: false
+        }))
       } catch (error) {
         set({
           error: error instanceof Error ? error.message : "Unknown error",
-          isLoading: false,
+          updating: false,
         });
       }
     },
 
     delete: async (id) => {
-      set({ isLoading: true, error: undefined });
+      set({ deleting: true, error: undefined });
       try {
         await api.delete(id);
         await useEntityStore(api).getState().getAll(1, 10); // Refresh list
+        set((state)=>({
+          deleting: false
+        }))
       } catch (error) {
         set({
           error: error instanceof Error ? error.message : "Unknown error",
-          isLoading: false,
+          deleting: false,
         });
       }
     },

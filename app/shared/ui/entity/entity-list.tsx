@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 interface Action {
   label: string;
   icon: React.ElementType;
+  color: string;
   onClick: (row: any) => void;
 }
 interface ColumnConfig {
@@ -242,7 +243,7 @@ function ActionPopover({ actions, row }: { actions: Action[]; row: any }) {
       </Popover.Target>
       <Popover.Dropdown>
         <Stack gap="xs">
-          {actions.map((action, index) => (
+          {actions?.map((action, index) => (
               <Button
               key={index}
               leftSection={<action.icon size={16} />}
@@ -251,7 +252,7 @@ function ActionPopover({ actions, row }: { actions: Action[]; row: any }) {
               onClick={() => action.onClick(row)}
               style={{
                 backgroundColor: "transparent", // Ensure no background color by default
-                color: "gray-900", // Ensure text color is gray-900
+                color: action.color, // Ensure text color is gray-900
               }}
               onMouseEnter={(e) => {
                 // Apply hover effect on mouse enter

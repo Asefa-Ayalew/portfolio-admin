@@ -6,16 +6,24 @@ import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
 import { Project } from "@/app/models/projects";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
+import { useRouter } from "next/navigation";
 
 const projectApi = EntityApi<Project>("projects");
 const useProjectStore = useEntityStore<Project>(projectApi);
 
 const ProjectPage = () => {
-  const { data:projects, totalItems, isLoading, getAll } =
-    useProjectStore();
+
+  const {
+    data: projects,
+    totalItems,
+    isLoading,
+    delete: deleteProject,
+    getAll,
+  } = useProjectStore();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const router = useRouter();
 
   // Call getProjects only when currentPage or perPage changes
   useEffect(() => {
@@ -24,7 +32,8 @@ const ProjectPage = () => {
 
   // Pagination and perPage change handlers
   const handlePaginationChange = (page: number) => {
-    return setCurrentPage(page)};
+    return setCurrentPage(page);
+  };
 
   const handlePerPageChange = (perPage: number) => {
     setPerPage(perPage);
@@ -35,16 +44,25 @@ const ProjectPage = () => {
   if (isLoading) {
     return <Loader size="xl" />;
   }
+  const handleDelete = async (row: any) => {
+    console.log("row", row);
+    await deleteProject(row.id);
+  };
+  const handleEdit = async (row: Project) => {
+    router.push(`completed/detail/${row.id}`);
+  };
   const actions = [
     {
       label: "Edit",
       icon: IconEdit,
-      onClick: (row: any) => alert(`Edit action for ${row.name}`),
+      color: "black",
+      onClick: (row: any) => handleEdit(row),
     },
     {
       label: "Delete",
       icon: IconTrash,
-      onClick: (row: any) => alert(`Delete action for ${row.name}`),
+      color: "red",
+      onClick: (row: any) => handleDelete(row), // Pass the row ID to delete
     },
   ];
   const config = {
@@ -56,7 +74,6 @@ const ProjectPage = () => {
       { name: "features", key: "features" },
     ],
   };
-
   return (
     <div>
       <EntityList
