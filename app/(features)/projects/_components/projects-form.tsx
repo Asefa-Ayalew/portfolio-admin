@@ -3,6 +3,7 @@
 import { Project } from "@/app/models/projects";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
+import { messagingNotification } from "@/app/shared/ui/notification/notification";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Group, Textarea, TextInput } from "@mantine/core";
 import { useParams } from "next/navigation";
@@ -30,7 +31,7 @@ type CompletedProjects = z.infer<typeof completedProjectsSchema>;
 const projectApi = EntityApi<Project>("projects");
 const useProjectStore = useEntityStore<Project>(projectApi);
 
-const CompletedProjectsForm: React.FC<{
+const ProjectsForm: React.FC<{
   editMode: "new" | "detail";
 }> = ({ editMode }) => {
   const { selectedItem, getById, error, create, update, creating, updating } =
@@ -53,16 +54,32 @@ const CompletedProjectsForm: React.FC<{
     if (editMode === "new") {
       try {
         await create(data);
-        console.log("Project added successfully:", data);
+        messagingNotification({
+          title: "Success",
+          message: "Project successfully created!",
+          color: "green",
+        });
       } catch (error) {
-        console.error("Error adding project:", error);
+        messagingNotification({
+          title: "Error",
+          message: "Sorry project not successfully created",
+          color: "red",
+        });
       }
     } else if (editMode === "detail" && selectedItem) {
       try {
         await update(String(selectedItem?.id), data);
-        console.log("Project updated successfully:", data);
+        messagingNotification({
+          title: "Success",
+          message: "Project successfully updated!",
+          color: "green",
+        });
       } catch (error) {
-        console.error("Error updating project:", error);
+        messagingNotification({
+          title: "Error",
+          message: "Sorry project not successfully created",
+          color: "red",
+        });
       }
     }
   };
@@ -204,4 +221,4 @@ const CompletedProjectsForm: React.FC<{
   );
 };
 
-export default CompletedProjectsForm;
+export default ProjectsForm;

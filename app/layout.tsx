@@ -26,7 +26,7 @@ export default function RootLayout({
       <body>
         <RootStyleRegistry>
           <AuthProvider>
-            <Shell>{children}</Shell>
+          <Shell>{children}</Shell>
           </AuthProvider>
         </RootStyleRegistry>
       </body>

@@ -1,9 +1,9 @@
 import React from 'react'
-import CompletedProjectsForm from '../../_components/completed-projects-form'
+import ProjectsForm from '../../_components/projects-form'
 
 const CompletedProjectDetailPage = () => {
   return (
-    <CompletedProjectsForm editMode='detail'/>
+    <ProjectsForm editMode='detail'/>
   )
 }
 

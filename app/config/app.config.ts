@@ -14,14 +14,7 @@ export const appConfig = [
   { label: "Dashboard", icon: IconGauge, link: "/dashboard" },
   { label: "Profile", icon: IconUser, link: "profile" },
   { label: "Education", icon: IconCup, link: "/education" },
-  {
-    label: "Projects",
-    icon: IconBriefcase,
-    links: [
-      { label: "Ongoing Projects", link: "/projects/ongoing" },
-      { label: "Completed Projects", link: "/projects/completed" },
-    ],
-  },
+  { label: "Projects", icon: IconBriefcase, link:"/projects"},
   {
     label: "Skills",
     icon: IconCode,

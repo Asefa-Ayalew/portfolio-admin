@@ -49,7 +49,7 @@ const ProjectPage = () => {
     await deleteProject(row.id);
   };
   const handleEdit = async (row: Project) => {
-    router.push(`completed/detail/${row.id}`);
+    router.push(`projects/detail/${row.id}`);
   };
   const actions = [
     {
