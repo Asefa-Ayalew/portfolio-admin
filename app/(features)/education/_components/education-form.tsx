@@ -79,12 +79,11 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
   };
 
   useEffect(() => {
-    if (id) {
+    if (editMode === 'detail' && id) {
       getById(String(id));
     }
-  }, [getById, id]);
+  }, [editMode, id, getById]);
 
-  console.log("selectedItem", selectedItem);
   useEffect(() => {
     if (editMode === "detail" && selectedItem) {
       reset({
