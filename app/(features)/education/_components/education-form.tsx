@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { TextInput, Textarea, Button, Group, Box } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,12 +30,18 @@ const useEducationStore = useEntityStore<Education>(educationApi);
 const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
   editMode,
 }) => {
-  const { getById, selectedItem, create, update, creating, updating, deleting } =
-  useEducationStore();
-  
+  const {
+    getById,
+    selectedItem,
+    create,
+    update,
+    creating,
+    updating,
+    deleting,
+  } = useEducationStore();
+
   const params = useParams();
   const id = params.id;
-  const resetCalled = useRef(false);
   const {
     register,
     handleSubmit,
@@ -45,56 +51,50 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
     resolver: zodResolver(educationSchema),
   });
 
+  // Handle form submission
   const onSubmit: SubmitHandler<Education> = async (data) => {
-    if (editMode === "new") {
-      try {
+    try {
+      if (editMode === "new") {
         await create(data);
         messagingNotification({
-          title: "success",
-          message: "Education created Successfully",
+          title: "Success",
+          message: "Education created successfully",
           color: "green",
         });
-      } catch (error) {
+      } else if (editMode === "detail" && selectedItem) {
+        await update(String(selectedItem.id), data);
         messagingNotification({
-          title: "error",
-          message: "Sorry Education not created Successfully",
-          color: "red",
-        });
-      }
-    } else if (editMode === "detail" && selectedItem) {
-      try {
-        await update(String(selectedItem?.id), data);
-        messagingNotification({
-          title: "success",
-          message: "Education Updated Successfully",
+          title: "Success",
+          message: "Education updated successfully",
           color: "green",
         });
-      } catch (error) {
-        messagingNotification({
-          title: "error",
-          message: "Sorry Education not updated Successfully",
-          color: "red",
-        });
       }
+    } catch {
+      messagingNotification({
+        title: "Error",
+        message: "Operation failed. Please try again.",
+        color: "red",
+      });
     }
   };
 
+  // Fetch education data for "detail" mode
   useEffect(() => {
-    if (editMode === 'detail' && id) {
+    if (editMode === "detail" && id) {
       getById(String(id));
     }
   }, [editMode, id, getById]);
 
+  // Populate form when `selectedItem` is updated
   useEffect(() => {
-    if (editMode === "detail" && selectedItem && !resetCalled.current) {
+    if (editMode === "detail" && selectedItem) {
       reset({
-        institution: selectedItem?.institution,
-        degree: selectedItem?.degree,
-        startYear: selectedItem?.startYear,
-        endYear: selectedItem?.endYear,
-        description: selectedItem?.description,
+        institution: selectedItem.institution,
+        degree: selectedItem.degree,
+        startYear: new Date(selectedItem.startYear),
+        endYear: new Date(selectedItem.endYear),
+        description: selectedItem.description,
       });
-      resetCalled.current = true;
     }
   }, [selectedItem, editMode, reset]);
 
@@ -142,12 +142,14 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
             type="date"
             {...register("startYear", { valueAsDate: true })}
             error={errors.startYear?.message}
+            className="w-1/2"
           />
           <TextInput
             label="End Year"
             type="date"
             {...register("endYear", { valueAsDate: true })}
             error={errors.endYear?.message}
+            className="w-1/2"
           />
         </Box>
 
@@ -162,21 +164,23 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
           <Button
             type="submit"
             color="green"
-            leftSection={<IconDeviceFloppy size={16}/>}
+            leftSection={<IconDeviceFloppy size={16} />}
             loading={editMode === "new" ? creating : updating}
           >
             {editMode === "new" ? "Submit" : "Update"}
           </Button>
-          <Button
-          type="button"
-          color="red"
-          leftSection={<IconTrash size={16}/>}
-          loading={deleting}
-          onClick={async () => {
-            await handleDelete(); 
-          }}
-          className="text-white font-bold"
-          > {"Delete"}</Button>
+
+          {editMode === "detail" && (
+            <Button
+              type="button"
+              color="red"
+              leftSection={<IconTrash size={16} />}
+              loading={deleting}
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+          )}
         </Group>
       </form>
     </Box>
