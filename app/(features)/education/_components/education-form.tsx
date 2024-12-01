@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { TextInput, Textarea, Button, Group, Box } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,11 +30,12 @@ const useEducationStore = useEntityStore<Education>(educationApi);
 const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
   editMode,
 }) => {
+  const { getById, selectedItem, create, update, creating, updating, deleting } =
+  useEducationStore();
+  
   const params = useParams();
   const id = params.id;
-
-  const { getById, selectedItem, create, update, creating, updating, deleting } =
-    useEducationStore();
+  const resetCalled = useRef(false);
   const {
     register,
     handleSubmit,
@@ -85,7 +86,7 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
   }, [editMode, id, getById]);
 
   useEffect(() => {
-    if (editMode === "detail" && selectedItem) {
+    if (editMode === "detail" && selectedItem && !resetCalled.current) {
       reset({
         institution: selectedItem?.institution,
         degree: selectedItem?.degree,
@@ -93,6 +94,7 @@ const EducationForm: React.FC<{ editMode: "new" | "detail" }> = ({
         endYear: selectedItem?.endYear,
         description: selectedItem?.description,
       });
+      resetCalled.current = true;
     }
   }, [selectedItem, editMode, reset]);
 
