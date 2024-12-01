@@ -1,3 +1,4 @@
+"use client"
 import { supabase } from "../../auth/login/supabase-client";
 
 // Helper function to convert timestamp columns into Date objects
