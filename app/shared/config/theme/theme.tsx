@@ -257,10 +257,5 @@ export const theme: Partial<MantineThemeOverride> = {
         },
       },
     },
-    Loader: {
-      defaultProps: {
-        type: "bars",
-      },
-    },
   },
 };

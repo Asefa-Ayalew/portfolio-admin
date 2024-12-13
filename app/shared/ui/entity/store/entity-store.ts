@@ -55,7 +55,7 @@ export const useEntityStore = <T>(api: ReturnType<typeof EntityApi<T>>) =>
           if (prevState.selectedItem !== selectedItem) {
             return { selectedItem, detailLoading: false };
           }
-          return prevState;  // Prevent unnecessary state updates
+          return prevState;
         });
       } catch (error) {
         set({

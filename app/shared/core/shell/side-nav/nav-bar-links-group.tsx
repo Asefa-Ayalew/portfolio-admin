@@ -85,7 +85,7 @@ function LinksGroup({
   }`}
   aria-expanded={opened} // Add ARIA attribute for accessibility
 >
-  <Group justify="space-between" gap={0}>
+  <Group justify="space-between" className="w-full mr-0">
     <Box style={{ display: "flex", alignItems: "center" }}>
       <ThemeIcon variant="light" size={30}>
         <Icon style={{ width: rem(18), height: rem(18) }} />

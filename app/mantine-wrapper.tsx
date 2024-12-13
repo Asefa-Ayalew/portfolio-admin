@@ -16,7 +16,7 @@ export default function RootStyleRegistry({
     <MantineProvider theme={theme}>
       <Notifications position="bottom-right" />
       <ColorSchemeScript />
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<Loader size={30} />}>
         {children}
       </Suspense>
     </MantineProvider>

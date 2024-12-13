@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { EntityList } from "@/app/shared/ui/entity/entity-list";
-import { Loader } from "@mantine/core"; // For loading indicator
+import { Box, Center, Loader } from "@mantine/core"; // For loading indicator
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
 import { useEntityStore } from "@/app/shared/ui/entity/store/entity-store";
@@ -41,10 +41,6 @@ const SoftSkillPage = () => {
     setCurrentPage(1); // Reset to page 1 when perPage changes
   };
 
-  // Render loader while data is loading
-  if (isLoading) {
-    return <Loader size="xl" />;
-  }
   const handleDelete = async (row: SoftSkill) => {
     console.log("row", row);
     await deleteSoftSkill(row.id);
@@ -74,7 +70,12 @@ const SoftSkillPage = () => {
     ],
   };
   return (
-    <div>
+    <Box>
+       {isLoading ? (
+        <Center style={{ height: "100vh" }}>
+          <Loader size="md" />
+        </Center>
+      ) : (
       <EntityList
         data={softSkills}
         config={config}
@@ -86,7 +87,8 @@ const SoftSkillPage = () => {
         actions={actions}
         showDetail={true}
       />
-    </div>
+      )}
+    </Box>
   );
 };
 

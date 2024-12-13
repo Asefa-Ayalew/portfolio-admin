@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { EntityList } from "@/app/shared/ui/entity/entity-list";
-import { Loader } from "@mantine/core"; // For loading indicator
+import { Box, Center, Loader } from "@mantine/core"; // For loading indicator
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
 import { Project } from "@/app/models/projects";
@@ -13,7 +13,6 @@ const projectApi = EntityApi<Project>("projects");
 const useProjectStore = useEntityStore<Project>(projectApi);
 
 const ProjectPage = () => {
-
   const {
     data: projects,
     totalItems,
@@ -41,10 +40,6 @@ const ProjectPage = () => {
     setCurrentPage(1); // Reset to page 1 when perPage changes
   };
 
-  // Render loader while data is loading
-  if (isLoading) {
-    return <Loader size="xl" />;
-  }
   const handleDelete = async (row: Project) => {
     console.log("row", row);
     await deleteProject(String(row.id));
@@ -76,19 +71,25 @@ const ProjectPage = () => {
     ],
   };
   return (
-    <div>
-      <EntityList
-        data={projects}
-        config={config}
-        totalCount={totalItems ?? 0}
-        currentPage={currentPage}
-        perPage={perPage}
-        onPageChange={handlePaginationChange}
-        onPerPageChange={handlePerPageChange}
-        actions={actions}
-        showDetail={true}
-      />
-    </div>
+    <Box>
+      {isLoading ? (
+        <Center style={{ height: "100vh" }}>
+          <Loader size="md" />
+        </Center>
+      ) : (
+        <EntityList
+          data={projects}
+          config={config}
+          totalCount={totalItems ?? 0}
+          currentPage={currentPage}
+          perPage={perPage}
+          onPageChange={handlePaginationChange}
+          onPerPageChange={handlePerPageChange}
+          actions={actions}
+          showDetail={true}
+        />
+      )}
+    </Box>
   );
 };
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { EntityList } from "@/app/shared/ui/entity/entity-list";
-import { Loader } from "@mantine/core"; // For loading indicator
+import { Loader, Center, Box } from "@mantine/core"; // Center loader for better alignment
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { EntityApi } from "@/app/shared/ui/entity/api/entity-api";
 import { Education } from "@/app/models/education";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 const educationApi = EntityApi<Education>("education");
 const useEducationStore = useEntityStore<Education>(educationApi);
+
 const EducationPage = () => {
   const {
     data: educations,
@@ -23,33 +24,29 @@ const EducationPage = () => {
   const [perPage, setPerPage] = useState(10);
   const router = useRouter();
 
-  // Call getEducations only when currentPage or perPage changes
   useEffect(() => {
     getAll(currentPage, perPage);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, perPage]);
 
-  // Pagination and perPage change handlers
   const handlePaginationChange = (page: number) => {
-    return setCurrentPage(page);
+    setCurrentPage(page);
   };
 
-  const handlePerPageChange = (perPage: number) => {
-    setPerPage(perPage);
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
     setCurrentPage(1); // Reset to page 1 when perPage changes
   };
 
-  // Render loader while data is loading
-  if (isLoading) {
-    return <Loader size="xl" />;
-  }
   const handleDelete = async (row: Education) => {
-    console.log("row", row);
+    console.log("Deleting education:", row);
     await deleteEducation(String(row.id));
   };
-  const handleEdit = async (row: Education) => {
+
+  const handleEdit = (row: Education) => {
     router.push(`education/detail/${row.id}`);
   };
+
   const config = {
     visibleColumns: [
       { name: "Institution", key: "institution" },
@@ -59,33 +56,41 @@ const EducationPage = () => {
       { name: "Description", key: "description" },
     ],
   };
+
   const actions = [
     {
       label: "Edit",
       icon: IconEdit,
       color: "black",
-      onClick: (row: Education) => handleEdit(row),
+      onClick: handleEdit,
     },
     {
       label: "Delete",
       icon: IconTrash,
       color: "red",
-      onClick: (row: Education) => handleDelete(row), // Pass the row ID to delete
+      onClick: handleDelete,
     },
   ];
+
   return (
-    <div>
-      <EntityList
-        data={educations}
-        config={config}
-        totalCount={totalItems ?? 0}
-        currentPage={currentPage}
-        perPage={perPage}
-        onPageChange={handlePaginationChange}
-        onPerPageChange={handlePerPageChange}
-        actions={actions}
-      />
-    </div>
+    <Box>
+      {isLoading ? (
+        <Center style={{ height: "100vh" }}>
+          <Loader size="md" />
+        </Center>
+      ) : (
+        <EntityList
+          data={educations}
+          config={config}
+          totalCount={totalItems ?? 0}
+          currentPage={currentPage}
+          perPage={perPage}
+          onPageChange={handlePaginationChange}
+          onPerPageChange={handlePerPageChange}
+          actions={actions}
+        />
+      )}
+    </Box>
   );
 };
 
